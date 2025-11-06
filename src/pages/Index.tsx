@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import SearchBar from '@/components/SearchBar';
 import CategoryFilter from '@/components/CategoryFilter';
@@ -30,6 +31,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Navbar />
       <Hero />
       
       <TopDeals 

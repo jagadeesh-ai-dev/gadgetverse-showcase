@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Product } from '@/data/products';
 import { Star, Check, X, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface ProductModalProps {
   product: Product | null;
@@ -16,6 +17,8 @@ interface ProductModalProps {
 }
 
 const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
+  const { formatPrice } = useCurrency();
+  
   if (!product) return null;
 
   return (
@@ -45,7 +48,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
             </div>
             
             <div className="border-t pt-4">
-              <span className="text-4xl font-bold text-primary">${product.price}</span>
+              <span className="text-4xl font-bold text-primary">{formatPrice(product.price)}</span>
             </div>
           </div>
           

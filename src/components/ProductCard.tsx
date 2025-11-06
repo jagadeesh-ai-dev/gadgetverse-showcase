@@ -2,6 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Star, ExternalLink } from 'lucide-react';
 import { Product } from '@/data/products';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface ProductCardProps {
   product: Product;
@@ -9,6 +10,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, onViewDetails }: ProductCardProps) => {
+  const { formatPrice } = useCurrency();
   return (
     <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
       <div className="aspect-square overflow-hidden bg-secondary">
@@ -43,7 +45,7 @@ const ProductCard = ({ product, onViewDetails }: ProductCardProps) => {
         
         <div className="mt-auto">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-3xl font-bold text-primary">${product.price}</span>
+            <span className="text-3xl font-bold text-primary">{formatPrice(product.price)}</span>
             {product.isTopDeal && (
               <span className="bg-destructive text-destructive-foreground text-xs font-bold px-3 py-1 rounded-full">
                 TOP DEAL
