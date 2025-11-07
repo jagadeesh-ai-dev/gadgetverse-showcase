@@ -40,6 +40,12 @@ const Navbar = () => {
 
         <div className="flex items-center gap-4">
           <CurrencySelector />
+          <a 
+            href="/admin/login" 
+            className="text-xs text-muted-foreground hover:text-primary transition-colors"
+          >
+            Admin
+          </a>
         </div>
       </div>
     </nav>

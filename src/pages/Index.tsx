@@ -7,22 +7,25 @@ import ProductCard from '@/components/ProductCard';
 import ProductModal from '@/components/ProductModal';
 import TopDeals from '@/components/TopDeals';
 import Footer from '@/components/Footer';
-import { products, Product } from '@/data/products';
+import { useProducts, Product } from '@/hooks/useProducts';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data: products, isLoading } = useProducts();
 
   const filteredProducts = useMemo(() => {
+    if (!products) return [];
     return products.filter(product => {
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            product.description.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = activeCategory === 'All' || product.category === activeCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, activeCategory]);
+  }, [products, searchQuery, activeCategory]);
 
   const handleViewDetails = (product: Product) => {
     setSelectedProduct(product);
@@ -35,7 +38,7 @@ const Index = () => {
       <Hero />
       
       <TopDeals 
-        products={products} 
+        products={products || []} 
         onViewDetails={handleViewDetails}
       />
       
@@ -56,7 +59,17 @@ const Index = () => {
           onCategoryChange={setActiveCategory}
         />
         
-        {filteredProducts.length === 0 ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="h-48 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+            ))}
+          </div>
+        ) : filteredProducts.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-xl text-muted-foreground">
               No products found matching your criteria.

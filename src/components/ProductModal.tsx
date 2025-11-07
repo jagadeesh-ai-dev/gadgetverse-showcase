@@ -5,7 +5,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Product } from '@/data/products';
+import { Product } from '@/hooks/useProducts';
 import { Star, Check, X, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useCurrency } from '@/contexts/CurrencyContext';
@@ -31,7 +31,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-4">
             <img 
-              src={product.image} 
+              src={product.image_url} 
               alt={product.name}
               className="w-full rounded-lg"
             />
@@ -42,7 +42,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
                 <span className="ml-1 font-bold text-lg">{product.rating}</span>
               </div>
               <Badge variant="secondary">{product.category}</Badge>
-              {product.isTopDeal && (
+              {product.is_top_deal && (
                 <Badge variant="destructive">TOP DEAL</Badge>
               )}
             </div>
@@ -100,7 +100,7 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
               className="w-full h-14 text-lg bg-gradient-to-r from-primary to-accent hover:opacity-90"
               asChild
             >
-              <a href={product.affiliateLink} target="_blank" rel="noopener noreferrer">
+              <a href={product.affiliate_link} target="_blank" rel="noopener noreferrer">
                 Buy Now on Partner Site <ExternalLink className="ml-2 h-5 w-5" />
               </a>
             </Button>

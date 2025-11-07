@@ -5,7 +5,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
-import { Product } from '@/data/products';
+import { Product } from '@/hooks/useProducts';
 import ProductCard from './ProductCard';
 
 interface TopDealsProps {
@@ -14,7 +14,7 @@ interface TopDealsProps {
 }
 
 const TopDeals = ({ products, onViewDetails }: TopDealsProps) => {
-  const topDeals = products.filter(p => p.isTopDeal);
+  const topDeals = products.filter(p => p.is_top_deal);
   
   if (topDeals.length === 0) return null;
 

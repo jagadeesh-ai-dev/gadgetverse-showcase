@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Star, ExternalLink } from 'lucide-react';
-import { Product } from '@/data/products';
+import { Product } from '@/hooks/useProducts';
 import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface ProductCardProps {
@@ -15,7 +15,7 @@ const ProductCard = ({ product, onViewDetails }: ProductCardProps) => {
     <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
       <div className="aspect-square overflow-hidden bg-secondary">
         <img 
-          src={product.image} 
+          src={product.image_url} 
           alt={product.name}
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
           loading="lazy"
@@ -46,7 +46,7 @@ const ProductCard = ({ product, onViewDetails }: ProductCardProps) => {
         <div className="mt-auto">
           <div className="flex items-center justify-between mb-4">
             <span className="text-3xl font-bold text-primary">{formatPrice(product.price)}</span>
-            {product.isTopDeal && (
+            {product.is_top_deal && (
               <span className="bg-destructive text-destructive-foreground text-xs font-bold px-3 py-1 rounded-full">
                 TOP DEAL
               </span>
@@ -65,7 +65,7 @@ const ProductCard = ({ product, onViewDetails }: ProductCardProps) => {
               className="flex-1 bg-gradient-to-r from-primary to-accent hover:opacity-90"
               asChild
             >
-              <a href={product.affiliateLink} target="_blank" rel="noopener noreferrer">
+              <a href={product.affiliate_link} target="_blank" rel="noopener noreferrer">
                 Buy Now <ExternalLink className="ml-2 h-4 w-4" />
               </a>
             </Button>
