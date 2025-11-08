@@ -1,8 +1,10 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Star, ExternalLink } from 'lucide-react';
+import { Star, ExternalLink, Heart } from 'lucide-react';
 import { Product } from '@/hooks/useProducts';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { useWishlist } from '@/hooks/useWishlist';
+import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
   product: Product;
@@ -11,9 +13,24 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, onViewDetails }: ProductCardProps) => {
   const { formatPrice } = useCurrency();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const isFavorite = isInWishlist(product.id);
+
   return (
     <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
-      <div className="aspect-square overflow-hidden bg-secondary">
+      <div className="aspect-square overflow-hidden bg-secondary relative">
+        <button
+          onClick={() => toggleWishlist(product.id)}
+          className="absolute top-3 right-3 z-10 bg-background/80 backdrop-blur-sm p-2 rounded-full hover:bg-background transition-colors"
+          aria-label={isFavorite ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <Heart
+            className={cn(
+              "h-5 w-5 transition-colors",
+              isFavorite ? "fill-primary text-primary" : "text-muted-foreground"
+            )}
+          />
+        </button>
         <img 
           src={product.image_url} 
           alt={product.name}

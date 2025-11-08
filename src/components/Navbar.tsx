@@ -1,7 +1,11 @@
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Heart } from 'lucide-react';
 import CurrencySelector from './CurrencySelector';
+import { Button } from './ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  
   const scrollToProducts = () => {
     const productsSection = document.getElementById('products');
     productsSection?.scrollIntoView({ behavior: 'smooth' });
@@ -39,6 +43,14 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('/wishlist')}
+            aria-label="View wishlist"
+          >
+            <Heart className="h-5 w-5" />
+          </Button>
           <CurrencySelector />
           <a 
             href="/admin/login" 
