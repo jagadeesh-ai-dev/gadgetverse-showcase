@@ -1,17 +1,49 @@
 import { Heart } from 'lucide-react';
 import { useWishlist } from '@/hooks/useWishlist';
 import ProductCard from '@/components/ProductCard';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 import ProductModal from '@/components/ProductModal';
 import { Product } from '@/hooks/useProducts';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { Button } from '@/components/ui/button';
 
 const Wishlist = () => {
   const { wishlistItems, isLoading } = useWishlist();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const navigate = useNavigate();
 
-  if (isLoading) {
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session);
+    });
+  }, []);
+
+  if (isAuthenticated === false) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen pt-20 pb-16">
+          <div className="container mx-auto px-4">
+            <div className="text-center py-16">
+              <Heart className="h-24 w-24 text-muted-foreground mx-auto mb-4" />
+              <h2 className="text-2xl font-semibold mb-2">Sign in to view your wishlist</h2>
+              <p className="text-muted-foreground mb-6">
+                Create an account to save products and access them from any device
+              </p>
+              <Button onClick={() => navigate('/auth')}>Sign In</Button>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (isLoading || isAuthenticated === null) {
     return (
       <>
         <Navbar />

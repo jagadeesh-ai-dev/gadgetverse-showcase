@@ -1,10 +1,39 @@
-import { ShoppingBag, Heart } from 'lucide-react';
+import { ShoppingBag, Heart, User, LogOut } from 'lucide-react';
 import CurrencySelector from './CurrencySelector';
 import { Button } from './ui/button';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { User as SupabaseUser } from '@supabase/supabase-js';
+import { toast } from 'sonner';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success('Logged out successfully');
+    navigate('/');
+  };
   
   const scrollToProducts = () => {
     const productsSection = document.getElementById('products');
@@ -52,12 +81,29 @@ const Navbar = () => {
             <Heart className="h-5 w-5" />
           </Button>
           <CurrencySelector />
-          <a 
-            href="/admin/login" 
-            className="text-xs text-muted-foreground hover:text-primary transition-colors"
-          >
-            Admin
-          </a>
+          
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label="User menu">
+                  <User className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/admin/login')}>
+                  Admin
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button variant="ghost" onClick={() => navigate('/auth')}>
+              Login
+            </Button>
+          )}
         </div>
       </div>
     </nav>
