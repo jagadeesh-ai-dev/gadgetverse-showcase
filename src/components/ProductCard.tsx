@@ -4,6 +4,7 @@ import { Star, ExternalLink, Heart } from 'lucide-react';
 import { Product } from '@/hooks/useProducts';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { useWishlist } from '@/hooks/useWishlist';
+import { useReviews } from '@/hooks/useReviews';
 import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
@@ -14,7 +15,10 @@ interface ProductCardProps {
 const ProductCard = ({ product, onViewDetails }: ProductCardProps) => {
   const { formatPrice } = useCurrency();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const { averageRating, reviewCount } = useReviews(product.id);
   const isFavorite = isInWishlist(product.id);
+
+  const displayRating = averageRating > 0 ? averageRating : product.rating;
 
   return (
     <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
@@ -51,9 +55,11 @@ const ProductCard = ({ product, onViewDetails }: ProductCardProps) => {
         <div className="flex items-center gap-2 mb-3">
           <div className="flex items-center">
             <Star className="h-4 w-4 fill-accent text-accent" />
-            <span className="ml-1 font-semibold">{product.rating}</span>
+            <span className="ml-1 font-semibold">{displayRating.toFixed(1)}</span>
           </div>
-          <span className="text-sm text-muted-foreground">({Math.floor(Math.random() * 500 + 100)} reviews)</span>
+          <span className="text-sm text-muted-foreground">
+            ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
+          </span>
         </div>
         
         <p className="text-sm text-muted-foreground mb-4 line-clamp-2 flex-grow">
