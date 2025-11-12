@@ -15,6 +15,8 @@ export interface Product {
   cons: string[];
   affiliate_link: string;
   is_top_deal: boolean;
+  created_at?: string;
+  review_count?: number;
 }
 
 export const useProducts = () => {
@@ -27,7 +29,23 @@ export const useProducts = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as Product[];
+
+      // Fetch review counts for each product
+      const productsWithReviewCounts = await Promise.all(
+        (data || []).map(async (product) => {
+          const { count } = await supabase
+            .from('reviews')
+            .select('*', { count: 'exact', head: true })
+            .eq('product_id', product.id);
+
+          return {
+            ...product,
+            review_count: count || 0,
+          } as Product;
+        })
+      );
+
+      return productsWithReviewCounts;
     },
   });
 };
