@@ -1,11 +1,12 @@
 import { ShoppingBag, Heart, User, LogOut } from 'lucide-react';
 import CurrencySelector from './CurrencySelector';
 import { Button } from './ui/button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 import { toast } from 'sonner';
+import { NavLink } from './NavLink';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +16,7 @@ import {
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState<SupabaseUser | null>(null);
   
   useEffect(() => {
@@ -35,9 +37,17 @@ const Navbar = () => {
     navigate('/');
   };
   
-  const scrollToProducts = () => {
-    const productsSection = document.getElementById('products');
-    productsSection?.scrollIntoView({ behavior: 'smooth' });
+  const handleNavigation = (sectionId: string) => {
+    if (location.pathname === '/') {
+      const element = document.getElementById(sectionId);
+      element?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        element?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
   };
 
   return (
@@ -51,20 +61,21 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-6">
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          <NavLink
+            to="/"
             className="text-sm font-medium hover:text-primary transition-colors"
+            activeClassName="text-primary"
           >
             Home
-          </button>
+          </NavLink>
           <button
-            onClick={scrollToProducts}
+            onClick={() => handleNavigation('products')}
             className="text-sm font-medium hover:text-primary transition-colors"
           >
             Products
           </button>
           <button
-            onClick={() => document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => handleNavigation('footer')}
             className="text-sm font-medium hover:text-primary transition-colors"
           >
             Contact

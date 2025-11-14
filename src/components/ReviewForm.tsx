@@ -8,7 +8,15 @@ import { toast } from 'sonner';
 
 const reviewSchema = z.object({
   rating: z.number().min(1).max(5),
-  reviewText: z.string().min(10, 'Review must be at least 10 characters').max(500, 'Review must be less than 500 characters'),
+  reviewText: z.string()
+    .min(10, 'Review must be at least 10 characters')
+    .max(500, 'Review must be less than 500 characters')
+    .refine((text) => text.trim().length >= 10, 'Review cannot be only spaces')
+    .refine((text) => {
+      const profanityList = ['spam', 'fake', 'scam']; // Add more as needed
+      const lowerText = text.toLowerCase();
+      return !profanityList.some(word => lowerText.includes(word));
+    }, 'Review contains inappropriate content'),
 });
 
 interface ReviewFormProps {
