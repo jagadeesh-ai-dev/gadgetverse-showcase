@@ -18,17 +18,35 @@ import ProductCard from '@/components/ProductCard';
 import ProductModal from '@/components/ProductModal';
 import { Product } from '@/hooks/useProducts';
 
-const passwordSchema = z.string().min(6, 'Password must be at least 6 characters');
+const passwordSchema = z.string()
+  .min(6, 'Password must be at least 6 characters')
+  .max(72, 'Password must be less than 72 characters');
+
+const getPasswordStrength = (password: string) => {
+  let strength = 0;
+  if (password.length >= 8) strength++;
+  if (password.length >= 12) strength++;
+  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+  if (/\d/.test(password)) strength++;
+  if (/[^a-zA-Z\d]/.test(password)) strength++;
+  
+  if (strength <= 2) return { label: 'Weak', color: 'bg-destructive', width: '33%' };
+  if (strength <= 3) return { label: 'Medium', color: 'bg-yellow-500', width: '66%' };
+  return { label: 'Strong', color: 'bg-green-500', width: '100%' };
+};
 
 const Profile = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const navigate = useNavigate();
   const { wishlistItems } = useWishlist();
+  
+  const passwordStrength = newPassword ? getPasswordStrength(newPassword) : null;
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -47,6 +65,11 @@ const Profile = () => {
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!currentPassword) {
+      toast.error('Please enter your current password');
+      return;
+    }
+    
     if (newPassword !== confirmPassword) {
       toast.error('Passwords do not match');
       return;
@@ -62,6 +85,20 @@ const Profile = () => {
     }
 
     setLoading(true);
+    
+    // First verify current password by attempting to sign in
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: user?.email || '',
+      password: currentPassword,
+    });
+    
+    if (signInError) {
+      toast.error('Current password is incorrect');
+      setLoading(false);
+      return;
+    }
+    
+    // If current password is correct, update to new password
     const { error } = await supabase.auth.updateUser({
       password: newPassword,
     });
@@ -70,6 +107,7 @@ const Profile = () => {
       toast.error(error.message);
     } else {
       toast.success('Password updated successfully');
+      setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     }
@@ -148,6 +186,17 @@ const Profile = () => {
               <CardContent>
                 <form onSubmit={handlePasswordChange} className="space-y-4">
                   <div className="space-y-2">
+                    <Label htmlFor="currentPassword">Current Password</Label>
+                    <Input
+                      id="currentPassword"
+                      type="password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      placeholder="Enter current password"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
                     <Label htmlFor="newPassword">New Password</Label>
                     <Input
                       id="newPassword"
@@ -155,7 +204,21 @@ const Profile = () => {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="Enter new password"
+                      required
                     />
+                    {passwordStrength && (
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
+                            <div 
+                              className={`h-full ${passwordStrength.color} transition-all`}
+                              style={{ width: passwordStrength.width }}
+                            />
+                          </div>
+                          <span className="text-xs text-muted-foreground">{passwordStrength.label}</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="confirmPassword">Confirm Password</Label>
@@ -165,10 +228,11 @@ const Profile = () => {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Confirm new password"
+                      required
                     />
                   </div>
-                  <Button type="submit" disabled={loading || !newPassword || !confirmPassword}>
-                    Update Password
+                  <Button type="submit" disabled={loading || !currentPassword || !newPassword || !confirmPassword}>
+                    {loading ? 'Updating...' : 'Update Password'}
                   </Button>
                 </form>
               </CardContent>
