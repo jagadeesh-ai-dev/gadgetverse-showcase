@@ -22,9 +22,10 @@ interface ProductModalProps {
   product: Product | null;
   isOpen: boolean;
   onClose: () => void;
+  onProductView?: (product: Product) => void;
 }
 
-const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
+const ProductModal = ({ product, isOpen, onClose, onProductView }: ProductModalProps) => {
   const { formatPrice } = useCurrency();
   const { reviews, userReview, averageRating, reviewCount, addReview, updateReview, deleteReview } = useReviews(product?.id || '');
   const [currentUser, setCurrentUser] = useState<string | null>(null);
@@ -35,6 +36,13 @@ const ProductModal = ({ product, isOpen, onClose }: ProductModalProps) => {
       setCurrentUser(session?.user?.id || null);
     });
   }, []);
+
+  // Track product view when modal opens
+  useEffect(() => {
+    if (isOpen && product && onProductView) {
+      onProductView(product);
+    }
+  }, [isOpen, product, onProductView]);
   
   if (!product) return null;
 
