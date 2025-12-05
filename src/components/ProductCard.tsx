@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Star, ExternalLink, Heart } from 'lucide-react';
+import { Star, ExternalLink, Heart, Eye } from 'lucide-react';
 import { Product } from '@/hooks/useProducts';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { useWishlist } from '@/hooks/useWishlist';
@@ -10,9 +10,10 @@ import { cn } from '@/lib/utils';
 interface ProductCardProps {
   product: Product;
   onViewDetails: (product: Product) => void;
+  onQuickView?: (product: Product) => void;
 }
 
-const ProductCard = ({ product, onViewDetails }: ProductCardProps) => {
+const ProductCard = ({ product, onViewDetails, onQuickView }: ProductCardProps) => {
   const { formatPrice } = useCurrency();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { averageRating, reviewCount } = useReviews(product.id);
@@ -21,7 +22,7 @@ const ProductCard = ({ product, onViewDetails }: ProductCardProps) => {
   const displayRating = averageRating > 0 ? averageRating : product.rating;
 
   return (
-    <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
+    <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full group">
       <div className="aspect-square overflow-hidden bg-secondary relative">
         <button
           onClick={() => toggleWishlist(product.id)}
@@ -35,6 +36,15 @@ const ProductCard = ({ product, onViewDetails }: ProductCardProps) => {
             )}
           />
         </button>
+        {onQuickView && (
+          <button
+            onClick={() => onQuickView(product)}
+            className="absolute top-3 left-3 z-10 bg-background/80 backdrop-blur-sm p-2 rounded-full hover:bg-background transition-all opacity-0 group-hover:opacity-100"
+            aria-label="Quick view"
+          >
+            <Eye className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
+          </button>
+        )}
         <img 
           src={product.image_url} 
           alt={product.name}
