@@ -4,6 +4,7 @@ import Hero from '@/components/Hero';
 import SearchBar from '@/components/SearchBar';
 import CategoryFilter from '@/components/CategoryFilter';
 import SortSelector, { SortOption } from '@/components/SortSelector';
+import PriceRangeFilter from '@/components/PriceRangeFilter';
 import ProductCard from '@/components/ProductCard';
 import ProductModal from '@/components/ProductModal';
 import TopDeals from '@/components/TopDeals';
@@ -19,8 +20,19 @@ const Index = () => {
   const [sortOption, setSortOption] = useState<SortOption>('newest');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
   const { data: products, isLoading } = useProducts();
   const { recentlyViewed, addToRecentlyViewed, clearRecentlyViewed } = useRecentlyViewed();
+
+  // Calculate min/max prices from products
+  const { minPrice, maxPrice } = useMemo(() => {
+    if (!products || products.length === 0) return { minPrice: 0, maxPrice: 5000 };
+    const prices = products.map(p => p.price);
+    return {
+      minPrice: Math.floor(Math.min(...prices)),
+      maxPrice: Math.ceil(Math.max(...prices))
+    };
+  }, [products]);
 
   const filteredProducts = useMemo(() => {
     if (!products) return [];
@@ -29,7 +41,8 @@ const Index = () => {
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            product.description.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = activeCategory === 'All' || product.category === activeCategory;
-      return matchesSearch && matchesCategory;
+      const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
+      return matchesSearch && matchesCategory && matchesPrice;
     });
 
     // Apply sorting
@@ -51,7 +64,7 @@ const Index = () => {
     });
 
     return sorted;
-  }, [products, searchQuery, activeCategory, sortOption]);
+  }, [products, searchQuery, activeCategory, sortOption, priceRange]);
 
   const handleViewDetails = (product: Product) => {
     setSelectedProduct(product);
@@ -80,12 +93,20 @@ const Index = () => {
 
         <SearchBar value={searchQuery} onChange={setSearchQuery} />
         
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
           <CategoryFilter 
             activeCategory={activeCategory} 
             onCategoryChange={setActiveCategory}
           />
-          <SortSelector value={sortOption} onChange={setSortOption} />
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <PriceRangeFilter
+              min={minPrice}
+              max={maxPrice}
+              value={priceRange}
+              onChange={setPriceRange}
+            />
+            <SortSelector value={sortOption} onChange={setSortOption} />
+          </div>
         </div>
         
         {isLoading ? (
