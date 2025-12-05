@@ -7,8 +7,10 @@ import SortSelector, { SortOption } from '@/components/SortSelector';
 import ProductCard from '@/components/ProductCard';
 import ProductModal from '@/components/ProductModal';
 import TopDeals from '@/components/TopDeals';
+import RecentlyViewed from '@/components/RecentlyViewed';
 import Footer from '@/components/Footer';
 import { useProducts, Product } from '@/hooks/useProducts';
+import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const Index = () => {
@@ -18,6 +20,7 @@ const Index = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: products, isLoading } = useProducts();
+  const { recentlyViewed, addToRecentlyViewed, clearRecentlyViewed } = useRecentlyViewed();
 
   const filteredProducts = useMemo(() => {
     if (!products) return [];
@@ -114,12 +117,19 @@ const Index = () => {
         )}
       </main>
       
+      <RecentlyViewed 
+        products={recentlyViewed}
+        onViewDetails={handleViewDetails}
+        onClear={clearRecentlyViewed}
+      />
+      
       <Footer />
       
       <ProductModal 
         product={selectedProduct}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        onProductView={addToRecentlyViewed}
       />
     </div>
   );
