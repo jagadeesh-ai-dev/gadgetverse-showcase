@@ -1,12 +1,13 @@
 import { useState, useMemo } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
-import SearchBar from '@/components/SearchBar';
+import SearchBarWithAutocomplete from '@/components/SearchBarWithAutocomplete';
 import CategoryFilter from '@/components/CategoryFilter';
 import SortSelector, { SortOption } from '@/components/SortSelector';
 import PriceRangeFilter from '@/components/PriceRangeFilter';
 import ProductCard from '@/components/ProductCard';
 import ProductModal from '@/components/ProductModal';
+import QuickView from '@/components/QuickView';
 import TopDeals from '@/components/TopDeals';
 import RecentlyViewed from '@/components/RecentlyViewed';
 import Footer from '@/components/Footer';
@@ -20,6 +21,8 @@ const Index = () => {
   const [sortOption, setSortOption] = useState<SortOption>('newest');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
   const { data: products, isLoading } = useProducts();
   const { recentlyViewed, addToRecentlyViewed, clearRecentlyViewed } = useRecentlyViewed();
@@ -71,6 +74,11 @@ const Index = () => {
     setIsModalOpen(true);
   };
 
+  const handleQuickView = (product: Product) => {
+    setQuickViewProduct(product);
+    setIsQuickViewOpen(true);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -91,7 +99,12 @@ const Index = () => {
           </p>
         </div>
 
-        <SearchBar value={searchQuery} onChange={setSearchQuery} />
+        <SearchBarWithAutocomplete 
+          value={searchQuery} 
+          onChange={setSearchQuery}
+          products={products || []}
+          onProductSelect={handleViewDetails}
+        />
         
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
           <CategoryFilter 
@@ -132,6 +145,7 @@ const Index = () => {
                 key={product.id} 
                 product={product}
                 onViewDetails={handleViewDetails}
+                onQuickView={handleQuickView}
               />
             ))}
           </div>
@@ -151,6 +165,13 @@ const Index = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onProductView={addToRecentlyViewed}
+      />
+
+      <QuickView
+        product={quickViewProduct}
+        isOpen={isQuickViewOpen}
+        onClose={() => setIsQuickViewOpen(false)}
+        onViewFull={handleViewDetails}
       />
     </div>
   );
