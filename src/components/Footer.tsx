@@ -1,9 +1,10 @@
 import { Mail, Github, Linkedin, Twitter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-secondary mt-20">
+    <footer id="footer" className="bg-secondary mt-20">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-3 gap-8 mb-8">
           <div>
@@ -19,8 +20,8 @@ const Footer = () => {
           <div>
             <h4 className="font-bold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-muted-foreground">
-              <li><a href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</a></li>
-              <li><a href="/terms" className="hover:text-primary transition-colors">Terms & Conditions</a></li>
+              <li><Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="hover:text-primary transition-colors">Terms & Conditions</Link></li>
             </ul>
           </div>
           
