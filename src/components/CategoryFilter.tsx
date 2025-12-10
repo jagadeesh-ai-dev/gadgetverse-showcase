@@ -9,14 +9,14 @@ interface CategoryFilterProps {
 
 const CategoryFilter = ({ activeCategory, onCategoryChange }: CategoryFilterProps) => {
   return (
-    <div className="flex flex-wrap justify-center gap-3 mb-12">
+    <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 sm:mb-12">
       {categories.map((category) => (
         <Button
           key={category}
           onClick={() => onCategoryChange(category)}
           variant={activeCategory === category ? "default" : "outline"}
-          size="lg"
-          className="transition-all"
+          size="sm"
+          className="transition-all text-xs sm:text-sm md:text-base px-3 sm:px-4 md:px-6"
         >
           {category}
         </Button>

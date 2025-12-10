@@ -106,12 +106,12 @@ const Index = () => {
         onViewDetails={handleViewDetails}
       />
       
-      <main id="products" className="flex-grow container mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+      <main id="products" className="flex-grow container mx-auto px-4 py-8 sm:py-12 md:py-16">
+        <div className="text-center mb-6 sm:mb-8 md:mb-12">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4">
             Browse All Products
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto px-2">
             Find the perfect tech gadget for your needs. Filter by category or search for specific products.
           </p>
         </div>

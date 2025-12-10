@@ -19,11 +19,11 @@ const TopDeals = ({ products, onViewDetails }: TopDealsProps) => {
   if (topDeals.length === 0) return null;
 
   return (
-    <section className="py-16 bg-gradient-to-r from-primary/5 to-accent/5">
+    <section className="py-8 sm:py-12 md:py-16 bg-gradient-to-r from-primary/5 to-accent/5">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">Top Deals</h2>
-          <p className="text-xl text-muted-foreground">
+        <div className="text-center mb-6 sm:mb-8 md:mb-12">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4">Top Deals</h2>
+          <p className="text-sm sm:text-lg md:text-xl text-muted-foreground">
             Don't miss out on these amazing offers
           </p>
         </div>
@@ -35,9 +35,9 @@ const TopDeals = ({ products, onViewDetails }: TopDealsProps) => {
           }}
           className="w-full max-w-6xl mx-auto"
         >
-          <CarouselContent>
+          <CarouselContent className="-ml-2 sm:-ml-4">
             {topDeals.map((product) => (
-              <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3">
+              <CarouselItem key={product.id} className="pl-2 sm:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
                 <div className="p-1">
                   <ProductCard 
                     product={product} 
