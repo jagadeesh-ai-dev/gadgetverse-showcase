@@ -12,6 +12,7 @@ import AdminLogin from "./pages/admin/Login";
 import AdminDashboard from "./pages/admin/Dashboard";
 import ProductForm from "./pages/admin/ProductForm";
 import Wishlist from "./pages/Wishlist";
+import SharedWishlist from "./pages/SharedWishlist";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/wishlist/shared/:token" element={<SharedWishlist />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/admin/login" element={<AdminLogin />} />
