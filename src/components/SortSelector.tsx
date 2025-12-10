@@ -21,13 +21,13 @@ interface SortSelectorProps {
 
 const SortSelector = ({ value, onChange }: SortSelectorProps) => {
   return (
-    <div className="flex items-center gap-3 mb-8">
-      <ArrowUpDown className="h-5 w-5 text-muted-foreground" />
+    <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-8">
+      <ArrowUpDown className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="w-[220px]">
+        <SelectTrigger className="w-[140px] sm:w-[220px] text-xs sm:text-sm">
           <SelectValue placeholder="Sort by..." />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-background">
           <SelectItem value="newest">Newest First</SelectItem>
           <SelectItem value="rating-desc">Highest Rated</SelectItem>
           <SelectItem value="price-asc">Price: Low to High</SelectItem>

@@ -53,34 +53,34 @@ const ProductCard = ({ product, onViewDetails, onQuickView }: ProductCardProps) 
         />
       </div>
       
-      <div className="p-6 flex flex-col flex-grow">
+      <div className="p-4 sm:p-6 flex flex-col flex-grow">
         <div className="mb-2">
           <span className="text-xs font-semibold text-primary uppercase tracking-wide">
             {product.category}
           </span>
         </div>
         
-        <h3 className="text-xl font-bold mb-2 line-clamp-2">{product.name}</h3>
+        <h3 className="text-lg sm:text-xl font-bold mb-2 line-clamp-2">{product.name}</h3>
         
         <div className="flex items-center gap-2 mb-3">
           <div className="flex items-center">
             <Star className="h-4 w-4 fill-accent text-accent" />
-            <span className="ml-1 font-semibold">{displayRating.toFixed(1)}</span>
+            <span className="ml-1 font-semibold text-sm sm:text-base">{displayRating.toFixed(1)}</span>
           </div>
-          <span className="text-sm text-muted-foreground">
+          <span className="text-xs sm:text-sm text-muted-foreground">
             ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
           </span>
         </div>
         
-        <p className="text-sm text-muted-foreground mb-4 line-clamp-2 flex-grow">
+        <p className="text-xs sm:text-sm text-muted-foreground mb-4 line-clamp-2 flex-grow">
           {product.description}
         </p>
         
         <div className="mt-auto">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-3xl font-bold text-primary">{formatPrice(product.price)}</span>
+            <span className="text-xl sm:text-3xl font-bold text-primary">{formatPrice(product.price)}</span>
             {product.is_top_deal && (
-              <span className="bg-destructive text-destructive-foreground text-xs font-bold px-3 py-1 rounded-full">
+              <span className="bg-destructive text-destructive-foreground text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-1 rounded-full">
                 TOP DEAL
               </span>
             )}
@@ -88,18 +88,20 @@ const ProductCard = ({ product, onViewDetails, onQuickView }: ProductCardProps) 
           
           <div className="flex gap-2">
             <Button 
-              className="flex-1"
+              className="flex-1 text-xs sm:text-sm"
               onClick={() => onViewDetails(product)}
               variant="outline"
+              size="sm"
             >
               Details
             </Button>
             <Button 
-              className="flex-1 bg-gradient-to-r from-primary to-accent hover:opacity-90"
+              className="flex-1 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-xs sm:text-sm"
               asChild
+              size="sm"
             >
               <a href={product.affiliate_link} target="_blank" rel="noopener noreferrer">
-                Buy Now <ExternalLink className="ml-2 h-4 w-4" />
+                Buy <ExternalLink className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
               </a>
             </Button>
           </div>
