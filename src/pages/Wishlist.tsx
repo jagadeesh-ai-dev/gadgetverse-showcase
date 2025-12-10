@@ -9,6 +9,7 @@ import { Product } from '@/hooks/useProducts';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
+import WishlistShareDialog from '@/components/WishlistShareDialog';
 
 const Wishlist = () => {
   const { wishlistItems, isLoading } = useWishlist();
@@ -70,9 +71,12 @@ const Wishlist = () => {
       <Navbar />
       <div className="min-h-screen pt-20 pb-16">
         <div className="container mx-auto px-4">
-          <div className="flex items-center gap-3 mb-8">
-            <Heart className="h-8 w-8 text-primary fill-primary" />
-            <h1 className="text-4xl font-bold">My Wishlist</h1>
+          <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+            <div className="flex items-center gap-3">
+              <Heart className="h-8 w-8 text-primary fill-primary" />
+              <h1 className="text-4xl font-bold">My Wishlist</h1>
+            </div>
+            {wishlistItems.length > 0 && <WishlistShareDialog />}
           </div>
 
           {wishlistItems.length === 0 ? (
