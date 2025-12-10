@@ -27,15 +27,32 @@ const Index = () => {
   const { data: products, isLoading } = useProducts();
   const { recentlyViewed, addToRecentlyViewed, clearRecentlyViewed } = useRecentlyViewed();
 
-  // Calculate min/max prices from products
+  // Calculate min/max prices based on selected category
   const { minPrice, maxPrice } = useMemo(() => {
     if (!products || products.length === 0) return { minPrice: 0, maxPrice: 5000 };
-    const prices = products.map(p => p.price);
+    const categoryProducts = activeCategory === 'All' 
+      ? products 
+      : products.filter(p => p.category === activeCategory);
+    if (categoryProducts.length === 0) return { minPrice: 0, maxPrice: 5000 };
+    const prices = categoryProducts.map(p => p.price);
     return {
       minPrice: Math.floor(Math.min(...prices)),
       maxPrice: Math.ceil(Math.max(...prices))
     };
-  }, [products]);
+  }, [products, activeCategory]);
+
+  // Reset price range when category changes
+  const handleCategoryChange = (category: string) => {
+    setActiveCategory(category);
+    // Reset to full range for new category
+    const categoryProducts = category === 'All' 
+      ? products || []
+      : (products || []).filter(p => p.category === category);
+    if (categoryProducts.length > 0) {
+      const prices = categoryProducts.map(p => p.price);
+      setPriceRange([Math.floor(Math.min(...prices)), Math.ceil(Math.max(...prices))]);
+    }
+  };
 
   const filteredProducts = useMemo(() => {
     if (!products) return [];
@@ -109,7 +126,7 @@ const Index = () => {
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
           <CategoryFilter 
             activeCategory={activeCategory} 
-            onCategoryChange={setActiveCategory}
+            onCategoryChange={handleCategoryChange}
           />
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <PriceRangeFilter
