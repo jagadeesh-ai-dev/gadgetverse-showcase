@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -17,23 +17,67 @@ interface TopDealsProps {
   onViewDetails: (product: Product) => void;
 }
 
+const AUTOPLAY_DELAY = 4000;
+
 const TopDeals = ({ products, onViewDetails }: TopDealsProps) => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const progressInterval = useRef<NodeJS.Timeout | null>(null);
 
   const topDeals = products.filter(p => p.is_top_deal);
+
+  const startProgress = useCallback(() => {
+    if (progressInterval.current) {
+      clearInterval(progressInterval.current);
+    }
+    setProgress(0);
+    
+    const increment = 100 / (AUTOPLAY_DELAY / 50);
+    progressInterval.current = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) return 100;
+        return prev + increment;
+      });
+    }, 50);
+  }, []);
+
+  const stopProgress = useCallback(() => {
+    if (progressInterval.current) {
+      clearInterval(progressInterval.current);
+      progressInterval.current = null;
+    }
+  }, []);
 
   useEffect(() => {
     if (!api) return;
 
     setCount(api.scrollSnapList().length);
     setCurrent(api.selectedScrollSnap());
+    startProgress();
 
     api.on('select', () => {
       setCurrent(api.selectedScrollSnap());
+      setProgress(0);
+      if (!isPaused) {
+        startProgress();
+      }
     });
-  }, [api]);
+
+    return () => stopProgress();
+  }, [api, startProgress, stopProgress, isPaused]);
+
+  const handleMouseEnter = () => {
+    setIsPaused(true);
+    stopProgress();
+  };
+
+  const handleMouseLeave = () => {
+    setIsPaused(false);
+    startProgress();
+  };
 
   const scrollTo = useCallback((index: number) => {
     api?.scrollTo(index);
@@ -51,36 +95,53 @@ const TopDeals = ({ products, onViewDetails }: TopDealsProps) => {
           </p>
         </div>
         
-        <Carousel
-          setApi={setApi}
-          opts={{
-            align: 'start',
-            loop: true,
-          }}
-          plugins={[
-            Autoplay({
-              delay: 4000,
-              stopOnInteraction: false,
-              stopOnMouseEnter: true,
-            }),
-          ]}
-          className="w-full max-w-6xl mx-auto"
+        <div
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onTouchStart={handleMouseEnter}
+          onTouchEnd={handleMouseLeave}
         >
-          <CarouselContent className="-ml-2 sm:-ml-4">
-            {topDeals.map((product) => (
-              <CarouselItem key={product.id} className="pl-2 sm:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
-                <div className="p-1">
-                  <ProductCard 
-                    product={product} 
-                    onViewDetails={onViewDetails}
-                  />
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="hidden md:flex" />
-          <CarouselNext className="hidden md:flex" />
-        </Carousel>
+          <Carousel
+            setApi={setApi}
+            opts={{
+              align: 'start',
+              loop: true,
+            }}
+            plugins={[
+              Autoplay({
+                delay: AUTOPLAY_DELAY,
+                stopOnInteraction: false,
+                stopOnMouseEnter: true,
+              }),
+            ]}
+            className="w-full max-w-6xl mx-auto"
+          >
+            <CarouselContent className="-ml-2 sm:-ml-4">
+              {topDeals.map((product) => (
+                <CarouselItem key={product.id} className="pl-2 sm:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
+                  <div className="p-1">
+                    <ProductCard 
+                      product={product} 
+                      onViewDetails={onViewDetails}
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex" />
+            <CarouselNext className="hidden md:flex" />
+          </Carousel>
+
+          {/* Progress bar */}
+          <div className="w-full max-w-6xl mx-auto mt-4">
+            <div className="h-1 bg-muted rounded-full overflow-hidden">
+              <div
+                className="h-full bg-primary transition-all duration-50 ease-linear"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+        </div>
 
         {/* Dot indicators for mobile */}
         <div className="flex justify-center gap-2 mt-4 md:hidden">
