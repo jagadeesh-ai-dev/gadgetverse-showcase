@@ -12,6 +12,7 @@ import Profile from "./pages/Profile";
 import AdminLogin from "./pages/admin/Login";
 import AdminDashboard from "./pages/admin/Dashboard";
 import ProductForm from "./pages/admin/ProductForm";
+import BannerManagement from "./pages/admin/BannerManagement";
 import Wishlist from "./pages/Wishlist";
 import SharedWishlist from "./pages/SharedWishlist";
 import Terms from "./pages/Terms";
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/products/add" element={<ProductForm />} />
               <Route path="/admin/products/edit/:id" element={<ProductForm />} />
+              <Route path="/admin/banners" element={<BannerManagement />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
