@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAdminRole } from '@/hooks/useAdminRole';
 import { useProducts, useDeleteProduct } from '@/hooks/useProducts';
-import { LogOut, Plus, Edit, Trash2, TrendingUp } from 'lucide-react';
+import { LogOut, Plus, Edit, Trash2, TrendingUp, Megaphone } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -64,6 +64,10 @@ export default function AdminDashboard() {
             <p className="text-muted-foreground text-sm">Manage your products</p>
           </div>
           <div className="flex gap-2">
+            <Button variant="outline" onClick={() => navigate('/admin/banners')}>
+              <Megaphone className="w-4 h-4 mr-2" />
+              Banners
+            </Button>
             <Button onClick={() => navigate('/admin/products/add')}>
               <Plus className="w-4 h-4 mr-2" />
               Add Product

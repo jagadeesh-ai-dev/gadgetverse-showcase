@@ -65,6 +65,42 @@ export type Database = {
         }
         Relationships: []
       }
+      promo_banners: {
+        Row: {
+          button_link: string | null
+          button_text: string
+          created_at: string
+          id: string
+          is_active: boolean
+          subtitle: string
+          theme: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          button_link?: string | null
+          button_text?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          subtitle: string
+          theme?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          button_link?: string | null
+          button_text?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          subtitle?: string
+          theme?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           created_at: string
