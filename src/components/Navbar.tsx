@@ -1,4 +1,4 @@
-import { ShoppingBag, Heart, User, LogOut, Menu, X } from 'lucide-react';
+import { ShoppingBag, Heart, User, LogOut, Menu } from 'lucide-react';
 import CurrencySelector from './CurrencySelector';
 import { Button } from './ui/button';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 import { NavLink } from './NavLink';
+import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +26,28 @@ const Navbar = () => {
   const location = useLocation();
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isProductsActive, setIsProductsActive] = useState(false);
+
+  // Track if products section is in view
+  useEffect(() => {
+    if (location.pathname !== '/') {
+      setIsProductsActive(false);
+      return;
+    }
+
+    const handleScroll = () => {
+      const productsSection = document.getElementById('products');
+      if (productsSection) {
+        const rect = productsSection.getBoundingClientRect();
+        const isInView = rect.top <= 150 && rect.bottom >= 150;
+        setIsProductsActive(isInView);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check initial state
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [location.pathname]);
   
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -71,7 +94,10 @@ const Navbar = () => {
       </SheetClose>
       <button
         onClick={() => handleNavigation('products')}
-        className="text-lg font-medium hover:text-primary transition-colors text-left py-2"
+        className={cn(
+          "text-lg font-medium hover:text-primary transition-colors text-left py-2",
+          isProductsActive && "text-primary"
+        )}
       >
         Products
       </button>
@@ -149,7 +175,10 @@ const Navbar = () => {
           </NavLink>
           <button
             onClick={() => handleNavigation('products')}
-            className="text-sm font-medium hover:text-primary transition-colors"
+            className={cn(
+              "text-sm font-medium hover:text-primary transition-colors",
+              isProductsActive && "text-primary"
+            )}
           >
             Products
           </button>
