@@ -9,6 +9,7 @@ import ProductCard from '@/components/ProductCard';
 import ProductModal from '@/components/ProductModal';
 import QuickView from '@/components/QuickView';
 import TopDeals from '@/components/TopDeals';
+import NewArrivals from '@/components/NewArrivals';
 import RecentlyViewed from '@/components/RecentlyViewed';
 import Footer from '@/components/Footer';
 import { useProducts, Product } from '@/hooks/useProducts';
@@ -102,6 +103,11 @@ const Index = () => {
       <Hero />
       
       <TopDeals 
+        products={products || []} 
+        onViewDetails={handleViewDetails}
+      />
+
+      <NewArrivals 
         products={products || []} 
         onViewDetails={handleViewDetails}
       />
