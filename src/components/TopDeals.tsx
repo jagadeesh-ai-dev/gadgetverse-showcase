@@ -7,6 +7,7 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from '@/components/ui/carousel';
+import Autoplay from 'embla-carousel-autoplay';
 import { Product } from '@/hooks/useProducts';
 import ProductCard from './ProductCard';
 import { cn } from '@/lib/utils';
@@ -56,6 +57,13 @@ const TopDeals = ({ products, onViewDetails }: TopDealsProps) => {
             align: 'start',
             loop: true,
           }}
+          plugins={[
+            Autoplay({
+              delay: 4000,
+              stopOnInteraction: false,
+              stopOnMouseEnter: true,
+            }),
+          ]}
           className="w-full max-w-6xl mx-auto"
         >
           <CarouselContent className="-ml-2 sm:-ml-4">
