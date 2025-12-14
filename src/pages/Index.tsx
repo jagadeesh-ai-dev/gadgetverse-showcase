@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
+import PromoBanner from '@/components/PromoBanner';
 import SearchBarWithAutocomplete from '@/components/SearchBarWithAutocomplete';
 import CategoryFilter from '@/components/CategoryFilter';
 import SortSelector, { SortOption } from '@/components/SortSelector';
@@ -101,6 +102,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <Hero />
+      <PromoBanner />
       
       <TopDeals 
         products={products || []} 
